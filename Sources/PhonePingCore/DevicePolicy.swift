@@ -2,19 +2,41 @@ import Foundation
 
 public enum PingError: Error, LocalizedError, Equatable {
     case permission, appUnavailable, unsupportedInterface, notFound, ambiguous, invalidName
-    case unavailableAction, actionFailed, busy
+    case unavailableAction, actionFailed, requestUncertain, discoveryTimedOut, incompleteList, detailsChanged, busy
+
+    public var title: String {
+        switch self {
+        case .permission: return "Permission required"
+        case .appUnavailable: return "Find My couldn’t open"
+        case .unsupportedInterface: return "Open Find My to continue"
+        case .notFound: return "Device not found"
+        case .ambiguous: return "Devices share this name"
+        case .invalidName: return "Choose a different device name"
+        case .unavailableAction: return "Play Sound is unavailable"
+        case .actionFailed: return "Couldn’t complete the request"
+        case .requestUncertain: return "Sound request not confirmed"
+        case .discoveryTimedOut: return "Find My didn’t respond"
+        case .detailsChanged: return "Couldn’t verify the device"
+        case .incompleteList: return "Show the full device list"
+        case .busy: return "Request in progress"
+        }
+    }
 
     public var errorDescription: String? {
         switch self {
-        case .permission: return "Allow PhonePing in System Settings → Privacy & Security → Accessibility, then try again."
-        case .appUnavailable: return "Find My could not be opened. Open it manually and check that you’re signed in."
-        case .unsupportedInterface: return "PhonePing couldn’t safely read Find My. Open its Devices tab, dismiss any dialogs, and try again. This preview supports the English Find My interface."
-        case .notFound: return "Your saved phone wasn’t found. Check its name in Find My, then refresh the device list."
-        case .ambiguous: return "More than one device has that name. Give your iPhone a unique name in Settings → General → About → Name, then wait for Find My to update."
-        case .invalidName: return "Choose a device with a nonempty, unique name without commas."
-        case .unavailableAction: return "Find My hasn’t exposed a Play Sound action for this device. Open the phone in Find My and try again."
-        case .actionFailed: return "Find My didn’t accept the sound action. Open Find My to check the phone."
-        case .busy: return "A request is already in progress."
+        case .permission: return "Allow PhonePing in System Settings to use Find My."
+        case .appUnavailable: return "Open Find My and check that you’re signed in."
+        case .unsupportedInterface: return "Open Find My, select Devices, then try again. This preview requires Find My in English."
+        case .notFound: return "Check the device’s name in Find My, then refresh the list."
+        case .ambiguous: return "More than one device has this name. Choose a device with a unique name in Find My."
+        case .invalidName: return "Choose a device with a name that doesn’t contain commas or line breaks."
+        case .unavailableAction: return "PhonePing couldn’t find an available Play Sound control. Open Find My to check the device."
+        case .actionFailed: return "Open Find My to check the device, then try again."
+        case .requestUncertain: return "The request may have been sent. Check Find My before trying again."
+        case .discoveryTimedOut: return "No sound was requested. Open Find My and try again."
+        case .detailsChanged: return "The open device details don’t match your selection. No sound was requested. Open Find My and refresh your devices."
+        case .incompleteList: return "Open Find My and enlarge its window so all devices fit. PhonePing can’t safely choose from an incomplete or scrolling list."
+        case .busy: return "Wait for the current request to finish."
         }
     }
 }
@@ -29,7 +51,16 @@ public enum DevicePolicy {
 
     public static func validate(_ name: String) throws {
         guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-              !name.contains(","), !name.contains("\n") else { throw PingError.invalidName }
+              !name.contains(","), name.rangeOfCharacter(from: .newlines) == nil else { throw PingError.invalidName }
+    }
+
+    /// A nil list is an unrefreshed saved selection, to be checked at request time.
+    public static func selectionIssue(named name: String, in names: [String]?) -> PingError? {
+        do {
+            try validate(name)
+            if let names { _ = try uniqueIndex(named: name, in: names) }
+            return nil
+        } catch { return error as? PingError ?? .invalidName }
     }
 
     public static func uniqueIndex(named name: String, in names: [String]) throws -> Int {

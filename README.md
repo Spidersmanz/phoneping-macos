@@ -1,65 +1,70 @@
+<img src="Resources/Artwork/PhonePing.svg" width="72" alt="PhonePing icon">
+
 # PhonePing
 
-**One click in your Mac’s menu bar to play a sound on your iPhone.**
+Play a sound on your iPhone from the Mac menu bar. Click the icon, then choose **Play Sound** on your selected device.
 
-PhonePing is a small native Mac app that operates Apple’s Find My app. Choose your phone once, then click the menu bar icon when you need to hear where it is.
+PhonePing uses Apple's Find My app and the Apple Account already signed in on your Mac. It has no separate login, companion phone app, analytics, or developer server.
 
-**Early preview, not a public stable release.** Find My’s interface is not an automation contract. Compatibility must be tested for each macOS release. This project initially targets the English Find My interface observed on macOS 27.0.1. The deployment target is macOS 14, but that does not mean older versions have been verified.
+**Experimental source preview.** The current adapter has been tested with Find My in English on macOS 27.0.1, on Apple silicon. There is no signed public download yet. Find My's interface can change, so other macOS versions and languages are unverified. The macOS 14 build target is not a compatibility claim.
 
-## Privacy by design
+## How it works
 
-- No account or Apple password entry in PhonePing.
-- No network client, analytics, ads, updater, or developer server.
-- No Find My cache, Keychain, browser cookie, or iCloud token access.
-- Stores only your chosen device name in local macOS preferences.
-- Uses the Apple Account already signed in to Find My.
+Choose a uniquely named device once in Settings. Later, use the menu bar to request a sound. Opening the menu does not ring anything.
 
-The app runs locally. **Apple’s Find My service still uses the network to deliver the sound request.** This is not an offline Bluetooth ping. Accessibility is a powerful macOS permission; read [PRIVACY.md](PRIVACY.md) for exactly what the app does with it.
+If Find My is closed, PhonePing opens it without requesting activation. Its window may appear behind your work. Once Find My reports playback, PhonePing can close the temporary instance. A Find My instance that was already visible, or that you activate during the request, stays open. Pending or uncertain requests also leave it open.
 
-## Build and run
+The app verifies the exact name in the device list and again in its details before pressing Play Sound. Duplicate names, incomplete lists, and unfamiliar controls stop the request. It never chooses by location, clicks screen coordinates, or automatically retries a submitted sound.
 
-You need a Mac and Xcode or its Command Line Tools with Swift 5.9 or later. There are no third-party package dependencies.
+## Build and set up
+
+You need a Mac with Xcode or Command Line Tools providing Swift 5.9 or later. There are no third-party package dependencies.
 
 ```sh
 bash scripts/build.sh
 open dist/PhonePing.app
 ```
 
-The build is for the current Mac’s architecture and is signed locally with an ad-hoc signature. It is not notarized for public distribution. **Do not disable Gatekeeper or other macOS security protections.** For the preview, build from source on your own Mac.
+1. Make sure your iPhone appears in Find My on this Mac. Give it a unique name without commas or line breaks, and wait for Find My to show any rename.
+2. In PhonePing, choose **Open System Settings…** and enable the app under **Privacy & Security → Device Control and Data Access** (called **Accessibility** on older macOS versions). Add `dist/PhonePing.app` with the + button if needed.
+3. Choose **Find Devices**, select your iPhone, then test **Play Sound**.
+4. Close Settings. Use the menu bar icon for subsequent requests.
 
-1. Make sure your iPhone is listed in Apple’s Find My app on this Mac.
-2. Give the phone a unique name without commas in iPhone Settings → General → About → Name. Allow time for Find My to update.
-3. Open PhonePing and use **Open Permission Settings** to grant permission yourself. On macOS 27 this permission is called **Device Control and Data Access**; older versions call it **Accessibility**. You may need to add `dist/PhonePing.app` with the + button.
-4. Click **Refresh**, choose your iPhone, and click **Play Sound** to test it.
-5. Close the settings window. Left-click the menu bar icon to request a sound. Right-click or Option-click for settings and Quit.
+Local builds are ad-hoc signed. Keep the app at a stable path and quit it before replacing it. Rebuilding may require removing and re-adding its permission. Do not disable macOS security protections. See [installation and release instructions](docs/DISTRIBUTION.md).
 
-Keep the app at a stable path. Moving or rebuilding a locally signed app can require granting Accessibility again. To start it at login, add the built app through macOS Login Items; PhonePing does not modify login settings itself.
+## Privacy
 
-## What to expect
+PhonePing stores your selected device name in local preferences. Names and status text encountered through Accessibility are processed in memory; the app does not save locations, screenshots, device history, or raw UI trees. **Clear Selection** removes the saved choice.
 
-Find My may appear while PhonePing operates it. The app reports that it requested a sound, not that your iPhone has actually made one. If your phone is offline, Find My can queue the sound until it reconnects. Silence it with an iPhone volume or power button. See [Apple’s Play Sound instructions](https://support.apple.com/en-ca/guide/findmy-mac/fmm48b093e33/mac).
+The app has no network client and does not read iCloud credentials, Keychain entries, tokens, browser sessions, or Find My caches. **Apple's Find My still uses the network to deliver the sound.** This is not an offline Bluetooth ping.
 
-PhonePing stops rather than guessing if names are duplicated, your selected phone is absent, or the expected controls cannot be identified. It verifies the full name in the phone’s details before pressing Play Sound. It never selects a default first device, uses fixed screen coordinates, or invokes Erase, Lost Mode, or Remove.
+Accessibility permits broad control of other apps. PhonePing restricts its own code to Find My, but macOS does not grant a Find My-only permission. Read [Privacy](PRIVACY.md) for the exact boundaries, diagnostic behavior, and removal instructions.
 
-## Development
+## Status and limits
+
+Build 12 has a verified cold-launch test: the iPhone rang, Find My stayed behind the current window, and its temporary process exited. Automated tests cover selection, device verification, single submission, uncertain results, and cleanup decisions. They do not establish real-device compatibility.
+
+An already-open Find My came forward in one test; that foreground behavior is still being investigated. Long or virtualized lists, offline delivery, other window configurations, full keyboard/VoiceOver use, and repeated-use resource measurements also need testing. iPhone is the primary tested device; an Apple Watch test was reported during development. Other device types and Find My Items, including AirTags, are not claimed as supported.
+
+An offline device may ring later. Silence an iPhone with a volume or power button. After an uncertain result, check Find My before requesting another sound. [Apple's Play Sound guide](https://support.apple.com/en-ca/guide/findmy-mac/fmm48b093e33/mac).
+
+See [test evidence](docs/TESTING.md), [measured resource use](docs/PERFORMANCE.md), and the [release plan](docs/ROADMAP.md).
+
+## Contributing
+
+Compatibility fixes, accessibility checks, and reproducible bug reports are welcome. Use fictional device names; never post account details, precise locations, or raw Find My screenshots. Report security concerns through the process in [Security](SECURITY.md).
 
 ```sh
 bash scripts/test.sh
+python3 scripts/test-privacy.py
+python3 scripts/check-privacy.py
 bash scripts/build.sh
 ```
 
-The tests exercise exact device selection and sound-action safeguards. Automated tests do not ring a real phone. Manual validation is documented in [docs/TESTING.md](docs/TESTING.md).
+Read [Contributing](CONTRIBUTING.md) before your first commit. The [publishing checklist](docs/PUBLISHING.md) separates source publication from a signed download. GitHub checks do not ring devices or receive Apple credentials.
 
-| Location | Purpose |
-| --- | --- |
-| `Sources/PhonePing` | Native menu bar UI and Find My accessibility adapter |
-| `Sources/PhonePingCore` | Device selection and action validation |
-| `Tests/PhonePingCoreTests` | Safety regression tests |
-| `docs/ARCHITECTURE.md` | Design decisions and research |
-| `docs/ROADMAP.md` | Small, staged release plan |
+## License and credits
 
-Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md). No Apple device, account, or location data should be included in issues or test fixtures.
+[MIT](LICENSE). An independent project by Lanza Studios Inc., maintained by [Spidersmanz](https://github.com/Spidersmanz).
 
-## License and affiliation
-
-[MIT](LICENSE). PhonePing is an independent project and is not affiliated with or endorsed by Apple. Apple, iPhone, macOS, and Find My are Apple trademarks.
+PhonePing is a working name with [known naming overlap](docs/FINDMY-CLI-REVIEW.md#name). This project is not affiliated with Apple or other similarly named apps. Apple, iPhone, macOS, and Find My are Apple trademarks.

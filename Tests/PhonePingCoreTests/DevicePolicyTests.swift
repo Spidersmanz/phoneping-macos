@@ -2,6 +2,20 @@ import XCTest
 @testable import PhonePingCore
 
 final class DevicePolicyTests: XCTestCase {
+    func testSavedSelectionIsBlockedWhenKnownMissingOrAmbiguous() {
+        XCTAssertNil(DevicePolicy.selectionIssue(named: "Phone", in: nil))
+        XCTAssertNil(DevicePolicy.selectionIssue(named: "Phone", in: ["Phone"]))
+        XCTAssertEqual(DevicePolicy.selectionIssue(named: "Phone", in: []), .notFound)
+        XCTAssertEqual(DevicePolicy.selectionIssue(named: "Phone", in: ["Phone", "Phone"]), .ambiguous)
+        XCTAssertEqual(DevicePolicy.selectionIssue(named: "", in: nil), .invalidName)
+    }
+
+    func testRejectsOtherNewlineSeparators() {
+        for name in ["Phone\rWork", "Phone\u{2028}Work"] {
+            XCTAssertThrowsError(try DevicePolicy.validate(name))
+        }
+    }
+
     func testDuplicateNamesCannotTriggerEitherDevice() {
         XCTAssertThrowsError(try DevicePolicy.uniqueIndex(named: "iPhone", in: ["Mac", "iPhone", "iPhone"])) {
             XCTAssertEqual($0 as? PingError, .ambiguous)

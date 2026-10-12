@@ -14,3 +14,20 @@ Claude or another assistant can provide an additional code review before approva
 Do not add iCloud login flows, reverse-engineered Apple endpoints, analytics, automatic account discovery, hidden daemons, or broad permissions to fix an automation problem. If Apple changes its UI, fail safely and document the compatibility gap.
 
 Be considerate in discussions. Explain the behavior you observed, avoid personal criticism, and help newcomers reproduce issues.
+
+## Before your first commit
+
+Use your GitHub no-reply email for commit attribution. Configure it for this repository, then enable the local push check:
+
+```sh
+git config --local user.name "YOUR_GITHUB_HANDLE"
+git config --local user.email "YOUR_GITHUB_NOREPLY_ADDRESS"
+git config --local core.hooksPath .githooks
+python3 scripts/check-privacy.py
+```
+
+Get your exact no-reply address from GitHub Settings → Emails. The local check examines current files, staged content, actual commit history including detached HEAD, and tags. The push hook also checks destination branch/tag names. Local Git replacements cannot hide original objects; history grafts block review. It rejects non-public email addresses, common credential formats, personal machine paths, generated/private files, and unreviewed binaries. It does not upload files or print matched values. Run `python3 scripts/test-privacy.py` after changing this check.
+
+The push hook is local to each clone and must be enabled there. Do not bypass a failed check to publish. Review the final diff manually; pattern matching cannot recognize every device name, location, identifier, or secret. CI repeats the check after upload and is not a substitute for the local check. See [repository privacy](docs/REPO-PRIVACY.md).
+
+For repository settings and the separate signed-download gate, see [Publishing](docs/PUBLISHING.md).

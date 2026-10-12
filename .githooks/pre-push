@@ -1,0 +1,5 @@
+#!/bin/sh
+# Read-only local check before Git sends commits. No data is uploaded by this script.
+set -eu
+cd "$(git rev-parse --show-toplevel)"
+exec python3 scripts/check-privacy.py --pre-push

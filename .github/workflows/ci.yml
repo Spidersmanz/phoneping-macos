@@ -4,6 +4,9 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   macos:
     runs-on: macos-15
@@ -12,7 +15,17 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Test selection safeguards
+          fetch-depth: 0
+      - name: Check publication privacy
+        run: |
+          python3 scripts/test-privacy.py
+          python3 scripts/check-privacy.py
+      - name: Validate scripts and bundle metadata
+        run: |
+          for script in scripts/*.sh .githooks/pre-push; do bash -n "$script"; done
+          plutil -lint Resources/Info.plist
+          git diff --check
+      - name: Test selection, UI state, and adapter failures
         run: bash scripts/test.sh
       - name: Build local app
         run: bash scripts/build.sh

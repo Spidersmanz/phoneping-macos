@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
+  <title id="title">PhonePing neutral phone silhouette</title>
+  <desc id="description">A graphite phone with a light neutral screen and ringing marks on both sides. The background is transparent.</desc>
+  <path d="M300 340C242 404 242 490 300 554M236 278C144 388 144 506 236 616M724 340C782 404 782 490 724 554M788 278C880 388 880 506 788 616" fill="none" stroke="#7C828C" stroke-width="36" stroke-linecap="round"/>
+  <rect x="354" y="156" width="316" height="692" rx="76" fill="#25282E" stroke="#A0A4AA" stroke-width="4"/>
+  <rect x="374" y="176" width="276" height="652" rx="56" fill="#E3E5E8"/>
+  <rect x="469" y="205" width="86" height="24" rx="12" fill="#25282E"/>
+  <path d="M470 792H554" fill="none" stroke="#25282E" stroke-width="12" stroke-linecap="round"/>
+</svg>

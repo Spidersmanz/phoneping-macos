@@ -8,6 +8,7 @@ let package = Package(
     targets: [
         .target(name: "PhonePingCore"),
         .executableTarget(name: "PhonePing", dependencies: ["PhonePingCore"]),
-        .testTarget(name: "PhonePingCoreTests", dependencies: ["PhonePingCore"])
+        .testTarget(name: "PhonePingCoreTests", dependencies: ["PhonePingCore"]),
+        .testTarget(name: "PhonePingAppTests", dependencies: ["PhonePing", "PhonePingCore"])
     ]
 )

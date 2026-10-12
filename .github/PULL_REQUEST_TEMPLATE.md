@@ -8,6 +8,7 @@ What user problem does this solve, and what happens now?
 - [ ] Release build succeeds
 - [ ] Find My changes were tested manually, or limitations are explicitly stated
 - [ ] No personal data, new network calls, or broader permissions
+- [ ] Local publication privacy check passes; screenshots and fixtures use invented data
 
 macOS version / Find My language:
 
