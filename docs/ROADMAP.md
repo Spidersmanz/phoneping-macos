@@ -48,6 +48,7 @@ The live checks are the gate for the behaviors claimed in a downloadable release
 - [x] Complete a bounded source/privacy/security review and record unresolved release gates. An independent Claude review remains optional and requires maintainer authorization.
 - [x] Prepare draft preview notes with verified behavior and limitations; do not publish them as a release yet.
 - [x] Confirm repository owner: the connected GitHub account `Spidersmanz`.
+- [x] Confirm repository slug: the maintainer chose `phoneping-macos` on October 12, 2026.
 - [x] Remove personal email from unpublished commit metadata; configure repository-local no-reply attribution and enable the local publication check. See [repository privacy](REPO-PRIVACY.md).
 - [x] Confirm the maintainer prefers PhonePing as the working name.
 - [ ] Resolve the existing PhonePing naming overlap before public distribution; see [FINDMY-CLI-REVIEW.md](FINDMY-CLI-REVIEW.md).

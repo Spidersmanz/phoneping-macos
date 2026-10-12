@@ -18,14 +18,14 @@ The automated guard checks current files, the index, real commit objects, detach
 
 These settings require an actual repository and must be verified there. They are not active merely because this document exists.
 
-- Owner: `Spidersmanz`. Keep Lanza Studios Inc. credited. Use PhonePing as the working title, clearly marked as an experimental source preview; the final public app identity remains a decision before binary distribution.
+- Approved repository: `Spidersmanz/phoneping-macos`. The maintainer confirmed this slug on October 12, 2026; repository creation and public-upload approval remain pending. Keep Lanza Studios Inc. credited. Use PhonePing as the working title, clearly marked as an experimental source preview; the final public app identity remains a decision before binary distribution.
 - Description: “A small macOS menu bar app that plays a sound on your iPhone through Apple's Find My.” Suggested topics: `macos`, `swift`, `menu-bar`, `find-my`, `iphone`.
 - Enable Issues and private vulnerability reporting. Verify **Security → Report a vulnerability** is available before inviting security reports. A SECURITY.md file alone does not enable the private channel. [GitHub's setup guide](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configuring-private-vulnerability-reporting-for-a-repository).
 - Enable available secret scanning and push protection. These complement the local privacy guard; they do not detect all personal data. [GitHub's push protection guide](https://docs.github.com/en/code-security/concepts/secret-security/push-protection).
 - After the initial CI run, protect `main`: require pull requests, the passing `macos` check from GitHub Actions, and resolved review conversations; block force pushes and branch deletion. Verify the actual check name before selecting it.
 - As a solo maintainer, use zero required approving reviews initially while retaining the PR and check requirements. Authors cannot approve their own PRs. Review contributor PRs yourself; add a required independent approval when another trusted maintainer is available. [GitHub's review rules](https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/approving-a-pull-request-with-required-reviews).
 - Keep Actions credentials read-only and do not give pull-request jobs Apple signing keys, notarization credentials, or a self-hosted Mac with a personal Find My session. This workflow only builds and tests synthetic fixtures on a hosted runner.
-- Claude review remains optional. Supply a reviewed source diff and synthetic fixtures only when explicitly requested. A review comment does not replace maintainer judgment or live-device testing.
+- Claude review is deferred until the maintainer has access again. The [review brief](REVIEW-BRIEF.md) is ready; no code has been sent for that review. Supply reviewed source and synthetic fixtures only when explicitly requested. A review comment does not replace maintainer judgment or live-device testing.
 
 Do not publish the ad-hoc `dist` app as a ready-to-install release. No repository, remote, ruleset, or release is created by these instructions.
 
