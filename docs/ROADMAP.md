@@ -24,8 +24,8 @@ The [research follow-up](RESEARCH-FOLLOWUP.md) prioritizes the remaining release
 - [x] Verify one build 10 Settings request after installing the polish: the maintainer confirmed the intended iPhone rang and Find My stayed behind. Automatic process cleanup did not complete.
 - [x] Add verified details dismissal and exit confirmation in build 11; one cold-launch request observed playback and confirmed Find My exited without activation.
 - [x] Confirm audible continuity and foreground preservation for the build 11 test: the maintainer reported continued ringing after Find My closed and that Find My stayed behind.
-- [ ] Resolve foreground behavior for an already-open Find My: build 12 preserved the existing active session and rang the phone, but the maintainer saw Find My come forward. Repeat from a confirmed foreground starting state.
-- [ ] Verify initially hidden, existing-visible, user-activated, and remaining window configurations, plus repeated cleanup reliability.
+- [x] Complete one controlled build 12 existing-visible request: from a maintainer-confirmed foreground state, the phone rang, Find My stayed behind, and the existing window was preserved. The earlier activation was not reproduced; its exact cause remains unproven.
+- [ ] Verify initially hidden, minimized, user-activated, and remaining window configurations, plus repeated cleanup reliability.
 
 The live checks are the gate for the behaviors claimed in a downloadable release. A source preview can be published with its unsupported and unverified cases explicit. A successful build alone does not prove the feature works. See [Publishing](PUBLISHING.md).
 

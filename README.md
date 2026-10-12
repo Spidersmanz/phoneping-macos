@@ -44,7 +44,7 @@ Accessibility permits broad control of other apps. PhonePing restricts its own c
 
 Build 12 has a verified cold-launch test: the iPhone rang, Find My stayed behind the current window, and its temporary process exited. Automated tests cover selection, device verification, single submission, uncertain results, and cleanup decisions. They do not establish real-device compatibility.
 
-An already-open Find My came forward in one test; that foreground behavior is still being investigated. Long or virtualized lists, offline delivery, other window configurations, full keyboard/VoiceOver use, and repeated-use resource measurements also need testing. iPhone is the primary tested device; an Apple Watch test was reported during development. Other device types and Find My Items, including AirTags, are not claimed as supported.
+A controlled test with Find My already open also rang the phone, stayed behind the current app, and preserved the existing window. Find My came forward in an earlier test; that behavior was not reproduced and its exact cause is unproven. Long or virtualized lists, offline delivery, other window configurations, full keyboard/VoiceOver use, and repeated-use resource measurements still need testing. iPhone is the primary tested device; an Apple Watch test was reported during development. Other device types and Find My Items, including AirTags, are not claimed as supported.
 
 An offline device may ring later. Silence an iPhone with a volume or power button. After an uncertain result, check Find My before requesting another sound. [Apple's Play Sound guide](https://support.apple.com/en-ca/guide/findmy-mac/fmm48b093e33/mac).
 

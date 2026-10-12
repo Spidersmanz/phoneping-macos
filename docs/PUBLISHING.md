@@ -35,9 +35,9 @@ Use [Testing](TESTING.md) for the remaining live cases: existing/hidden/minimize
 
 The source is already guarded against duplicate names and detected partial lists. Supporting more layouts or languages requires evidence and tests, not a fallback to coordinates or a guessed target. Login launch and keyboard shortcuts can follow once the app's identity and installation are stable.
 
-## Current unresolved behavior
+## Current window-state evidence
 
-An existing-instance build 12 test rang the iPhone and preserved Find My, but the maintainer saw Find My come forward. The diagnostic recorded it as active during the operation. A controlled repeat is pending because the setup also explicitly opened Find My. Keep this limitation visible in the source preview and resolve or scope it before promising background behavior for every window state. The cold-launch path has separate confirmed background and cleanup results.
+An initial existing-instance build 12 test rang the iPhone and preserved Find My, but it came forward. A controlled repeat, starting with another app in front and Find My open behind it, recorded playback, no activation, and preservation of the existing window; the maintainer confirmed ringing with Find My staying behind. The earlier behavior was not reproduced and its cause remains unproven. The cold-launch path has separate confirmed background and cleanup results. Hidden/minimized windows, Spaces/full-screen, activation races, and repeated-use reliability remain unverified; do not promise background behavior for every window state.
 
 ## Signed download gate
 

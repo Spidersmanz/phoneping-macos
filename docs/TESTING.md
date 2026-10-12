@@ -7,11 +7,17 @@ bash scripts/test.sh
 bash scripts/build.sh
 ```
 
+## Build 12 controlled existing-instance repeat — October 12
+
+The maintainer confirmed another app was foreground and Find My remained open behind it. Without using Open Find My or launching it again, one PhonePing Settings sound request recorded playback observed, no new process, initially hidden false, activation false, and Kept open: existing visible instance. The maintainer confirmed the iPhone rang while Find My stayed behind the foreground app. Escape dismissed the diagnostic.
+
+This verifies one background sound request that preserved a pre-existing visible instance. No source change or app rebuild was needed for the repeat. The earlier foreground behavior below was not reproduced; its exact cause is not established. Hidden/minimized windows, Spaces/full-screen, activation races, and repeated-use reliability remain separate cases.
+
 ## Build 12 existing-instance check — October 12
 
 Find My was explicitly opened before a single Settings sound request. An independent process check confirmed it was already running. The diagnostic recorded sound invocation, observed playback, no newly identified process, Find My active during the operation, and Kept open: activated during operation. The maintainer confirmed audible ringing and reported that Find My came forward. Escape dismissed the diagnostic successfully.
 
-This verifies that an active existing session was preserved, but does not establish foreground preservation for the already-open case. The setup used Open Find My immediately before returning to PhonePing, and the desktop tool did not independently establish the frontmost app before submission. A repeat from a maintainer-confirmed foreground state is pending. Do not classify the activation as solely a setup artifact or claim this path stays behind without that evidence. The previously verified cold-launch result remains separate.
+This verifies that an active existing session was preserved, but does not establish foreground preservation for the already-open case. The setup used Open Find My immediately before returning to PhonePing, and the desktop tool did not independently establish the frontmost app before submission. The controlled repeat above subsequently passed with a maintainer-confirmed foreground state. Do not classify the earlier activation as solely a setup artifact: its exact cause remains unproven. The previously verified cold-launch result remains separate.
 
 ## October 12 source-publication check
 
