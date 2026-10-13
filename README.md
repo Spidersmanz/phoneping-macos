@@ -8,6 +8,10 @@ PhonePing uses Apple's Find My app and the Apple Account already signed in on yo
 
 **Experimental source preview.** The current adapter has been tested with Find My in English on macOS 27.0.1, on Apple silicon. There is no signed public download yet. Find My's interface can change, so other macOS versions and languages are unverified. The macOS 14 build target is not a compatibility claim.
 
+## Demo
+
+Animated preview with fictional device data (22 seconds).
+
 ## How it works
 
 Choose a uniquely named device once in Settings. Later, use the menu bar to request a sound. Opening the menu does not ring anything.
