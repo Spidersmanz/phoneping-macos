@@ -10,7 +10,11 @@ PhonePing uses Apple's Find My app and the Apple Account already signed in on yo
 
 ## Demo
 
-Animated preview with fictional device data (22 seconds).
+<a href="https://github.com/user-attachments/assets/3f9dce7d-907a-40ac-aa4e-7434dc0e0fd3">
+  <img src="https://github.com/user-attachments/assets/a635060d-9dd2-457e-8413-e0e7dfc522fc" width="560" alt="Watch the PhonePing demo: Play Sound selected for a fictional iPhone">
+</a>
+
+[Watch the 22-second demo](https://github.com/user-attachments/assets/3f9dce7d-907a-40ac-aa4e-7434dc0e0fd3). Animated preview with fictional device data.
 
 ## How it works
 
