@@ -16,7 +16,7 @@ The automated guard checks current files, the index, real commit objects, detach
 
 ## GitHub setup
 
-These settings require an actual repository and must be verified there. They are not active merely because this document exists.
+The source preview was published on October 13, 2026 at [Spidersmanz/phoneping-macos](https://github.com/Spidersmanz/phoneping-macos). Its initial GitHub-hosted `macos` check passed. Private vulnerability reporting, secret scanning, and push protection are enabled; workflow credentials default to read-only. The checklist below also applies to future setup changes; verify live settings rather than inferring them from this document.
 
 - Approved repository: `Spidersmanz/phoneping-macos`. The maintainer confirmed this slug on October 12, 2026 and approved public source publication on October 13, 2026. Keep Lanza Studios Inc. credited. Use PhonePing as the working title, clearly marked as an experimental source preview; the final public app identity remains a decision before binary distribution.
 - Description: “A small macOS menu bar app that plays a sound on your iPhone through Apple's Find My.” Suggested topics: `macos`, `swift`, `menu-bar`, `find-my`, `iphone`.
