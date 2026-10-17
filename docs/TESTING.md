@@ -1,5 +1,7 @@
 # Testing
 
+The [Mac release checks](MAC-RELEASE-CHECKS.md) summarize the October 13 reliability and accessibility checks, failed window-state experiments, and recovery to build 12. The current source passes 125 tests (12 core and 113 app) after the post-review unhide and timeout fixes; builds 13–16 are withdrawn. Earlier dated entries below are historical results.
+
 Automated tests use synthetic names and do not launch Find My or make network requests. Run:
 
 ```sh
@@ -108,7 +110,7 @@ Use your own iPhone. Confirm sound delivery by hearing the phone or checking its
 | Permission setup closed | No permanent two-second permission timer remains active | Source verified; build 5 idle counters recorded below |
 | Five-minute idle / repeated requests | Record CPU, physical memory, wakeups and recovery; no background device scans or sustained memory growth | Build 11 completed a five-minute post-request idle sample in the same process with Settings confirmed closed. Active request cost, immediate recovery, and repeated-use resource measurements remain pending. See [PERFORMANCE.md](PERFORMANCE.md) |
 | Multiple candidate details sheets | Stops unless exactly one valid target/action context is established | Synthetic adapter test passed in 0.1.3; live check pending |
-| Keyboard and VoiceOver use | Settings and menu actions are reachable and names/status stay accurate | Pending |
+| Keyboard and VoiceOver use | Settings and menu actions are reachable and names/status stay accurate | Build 12: the maintainer confirmed Command-W closes Settings while the menu icon stays, Tab navigation works with macOS Keyboard navigation enabled, and VoiceOver reads the Settings labels clearly. Keyboard navigation was restored to off; the maintainer confirmed VoiceOver was off after testing. Full control activation, menu navigation, and spoken error/status changes remain pending; see [Mac release checks](MAC-RELEASE-CHECKS.md). |
 | Open at login opted in/out | Reflects system status; launches quietly and never automatically pings | Planned feature; not implemented |
 | Optional shortcut | Same guarded path, conflicts handled, one activation per key press | Deferred feature; not implemented |
 

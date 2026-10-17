@@ -29,8 +29,17 @@ extension FindMyAccess {
 
 enum DiscoveryFailure: Error { case temporarilyUnavailable }
 
+/// AX timeouts apply per reference; children read from an element don't inherit it.
+/// Each wrapper sets its timeout, and elements read through it carry the same value.
 struct AccessibilityElement: Hashable, @unchecked Sendable {
     let raw: AXUIElement
+    let timeout: Float
+    init(raw: AXUIElement, timeout: Float) {
+        self.raw = raw
+        self.timeout = timeout
+        AXUIElementSetMessagingTimeout(raw, timeout)
+    }
+    func adopting(_ child: AXUIElement) -> Self { Self(raw: child, timeout: timeout) }
     static func == (lhs: Self, rhs: Self) -> Bool { CFEqual(lhs.raw, rhs.raw) }
     func hash(into hasher: inout Hasher) { hasher.combine(CFHash(raw)) }
 }
@@ -45,9 +54,7 @@ final class NativeFindMyAccess: FindMyAccess, @unchecked Sendable {
     @MainActor func runningApplication() async throws -> AccessibilityElement? {
         guard AXIsProcessTrusted() else { throw PingError.permission }
         guard let app = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.findmy").first else { return nil }
-        let element = AXUIElementCreateApplication(app.processIdentifier)
-        AXUIElementSetMessagingTimeout(element, 0.25)
-        return AccessibilityElement(raw: element)
+        return AccessibilityElement(raw: AXUIElementCreateApplication(app.processIdentifier), timeout: 0.25)
     }
 
     @MainActor func application() async throws -> AccessibilityElement {
@@ -56,19 +63,16 @@ final class NativeFindMyAccess: FindMyAccess, @unchecked Sendable {
         lastOperation = nil
         let opened = try await FindMySession.open(using: NativeFindMyWorkspace())
         session = opened
-        let element = AXUIElementCreateApplication(opened.application.processIdentifier)
-        AXUIElementSetMessagingTimeout(element, 1)
-        return AccessibilityElement(raw: element)
+        return AccessibilityElement(raw: AXUIElementCreateApplication(opened.application.processIdentifier), timeout: 1)
     }
 
     @MainActor func finish(_ outcome: FindMyRequestOutcome, selection: String?) async {
         guard let session else { return }
         lastOperation = await session.finish(outcome) {
             guard let selection, session.mayDismissDetails else { return false }
-            let app = AXUIElementCreateApplication(session.application.processIdentifier)
-            AXUIElementSetMessagingTimeout(app, 0.25)
+            let app = AccessibilityElement(raw: AXUIElementCreateApplication(session.application.processIdentifier), timeout: 0.25)
             return await FindMyQuitPreparation(access: self).dismissDetails(
-                in: AccessibilityElement(raw: app), name: selection,
+                in: app, name: selection,
                 isAllowed: { session.mayDismissDetails })
         }
         self.session = nil
@@ -104,12 +108,12 @@ final class NativeFindMyAccess: FindMyAccess, @unchecked Sendable {
     func elements(_ element: AccessibilityElement, _ attribute: String) throws -> [AccessibilityElement]? {
         guard let value = try value(element, attribute) else { return nil }
         guard let elements = value as? [AXUIElement] else { throw PingError.unsupportedInterface }
-        return elements.map { AccessibilityElement(raw: $0) }
+        return elements.map(element.adopting)
     }
     func element(_ element: AccessibilityElement, _ attribute: String) throws -> AccessibilityElement? {
         guard let value = try value(element, attribute) else { return nil }
         guard CFGetTypeID(value) == AXUIElementGetTypeID() else { throw PingError.unsupportedInterface }
-        return AccessibilityElement(raw: value as! AXUIElement)
+        return element.adopting(value as! AXUIElement)
     }
     func frame(_ element: AccessibilityElement) throws -> CGRect? {
         guard let position = try value(element, kAXPositionAttribute),
