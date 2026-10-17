@@ -106,13 +106,14 @@ extension NSRunningApplication: FindMyProcess {}
             session.process = app
             try Task.checkCancellation()
             guard !app.isTerminated else { throw PingError.appUnavailable }
-            if app.isHidden, !app.unhide() { throw PingError.appUnavailable }
-            // Unhide is asynchronous. Give its run loop time before pressing a row.
-            for _ in 0..<20 {
+            // unhide() can return false and still take effect on a later run-loop turn.
+            // Send it once, then judge by actual visibility within the bounded wait.
+            if app.isHidden { _ = app.unhide() }
+            for attempt in 0...20 {
                 try Task.checkCancellation()
                 guard !app.isTerminated else { throw PingError.appUnavailable }
                 if !app.isHidden { return session }
-                try await workspace.pause()
+                if attempt < 20 { try await workspace.pause() }
             }
             throw PingError.appUnavailable
         } catch {

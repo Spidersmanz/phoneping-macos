@@ -1,6 +1,6 @@
 # Testing
 
-The [Mac release checks](MAC-RELEASE-CHECKS.md) summarize the October 13 reliability and accessibility checks, failed window-state experiments, and recovery to build 12. The restored baseline passes 120 tests; builds 13–16 are withdrawn. Earlier dated entries below are historical results.
+The [Mac release checks](MAC-RELEASE-CHECKS.md) summarize the October 13 reliability and accessibility checks, failed window-state experiments, and recovery to build 12. The current source passes 125 tests (12 core and 113 app) after the post-review unhide and timeout fixes; builds 13–16 are withdrawn. Earlier dated entries below are historical results.
 
 Automated tests use synthetic names and do not launch Find My or make network requests. Run:
 

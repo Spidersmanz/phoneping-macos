@@ -314,6 +314,44 @@ import PhonePingCore
         XCTAssertNil(workspace.observer)
     }
 
+    // unhide() can return false while the app still becomes visible on a later run-loop turn.
+    func testFalseUnhideReturnProceedsWhenTheAppBecomesVisible() async throws {
+        let workspace = TestWorkspace()
+        workspace.process.isHidden = true
+        workspace.process.unhideSucceeds = false
+        workspace.onPause = { workspace.process.isHidden = false }
+        let session = try await FindMySession.open(using: workspace)
+        XCTAssertFalse(session.application.isHidden)
+        XCTAssertEqual(workspace.process.calls, ["unhide"])
+        await session.finish(.playing)
+        XCTAssertEqual(workspace.process.calls, ["unhide", "hide"])
+    }
+
+    func testFalseUnhideReturnStillStopsIfTheAppStaysHidden() async {
+        let workspace = TestWorkspace()
+        workspace.process.isHidden = true
+        workspace.process.unhideSucceeds = false
+        do {
+            _ = try await FindMySession.open(using: workspace)
+            XCTFail("Expected bounded unhide failure")
+        } catch { XCTAssertEqual(error as? PingError, .appUnavailable) }
+        XCTAssertEqual(workspace.pauses, 20)
+        XCTAssertEqual(workspace.process.calls, ["unhide"])
+        XCTAssertNil(workspace.observer)
+    }
+
+    func testVisibilityIsCheckedAfterTheLastWait() async throws {
+        let workspace = TestWorkspace()
+        workspace.process.isHidden = true
+        workspace.process.unhideIsDelayed = true
+        workspace.onPause = { if workspace.pauses == 20 { workspace.process.isHidden = false } }
+        let session = try await FindMySession.open(using: workspace)
+        XCTAssertFalse(session.application.isHidden)
+        XCTAssertEqual(workspace.pauses, 20)
+        XCTAssertEqual(workspace.process.calls, ["unhide"])
+        await session.finish(.notSubmitted)
+    }
+
     func testFailedLaunchRemovesObserver() async {
         let workspace = TestWorkspace()
         workspace.alreadyRunning = false
