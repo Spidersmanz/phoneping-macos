@@ -1,5 +1,7 @@
 # Release plan
 
+See [Mac release checks](MAC-RELEASE-CHECKS.md) for current evidence and remaining gates. The installed app and runtime source are restored to build 12; builds 13–16 were withdrawn after live failures. Hidden/minimized operation remains unresolved and must be developed separately from the working app.
+
 The [0.1.3 improvement review](IMPROVEMENTS-0.1.3.md) tracks the current implementation and remaining checks. The [prototype review](REVIEW.md) identifies current findings; the [settings and feature plan](SETTINGS-PLAN.md) defines proposed behavior and acceptance checks. Each checkbox records implementation or verification separately; planned features are not implied to be available.
 
 The [research follow-up](RESEARCH-FOLLOWUP.md) prioritizes the remaining release checks, records the menu accessibility correction, and distinguishes planned distribution work from the installed build.
@@ -35,13 +37,14 @@ The live checks are the gate for the behaviors claimed in a downloadable release
 - [ ] Continue the manual test matrix before claiming broader compatibility; the source preview documents the current gaps.
 - [x] Use a standard menu, native grouped settings, concise status, and an About panel.
 - [x] Preserve the full target name in the native menu accessibility label when the visual title is truncated; regression and all 108 app tests pass.
-- [ ] Complete keyboard/VoiceOver validation on the release build.
+- [x] Verify basic Settings keyboard focus, Command-W closure, and clear spoken VoiceOver labels in build 12; confirmed by the maintainer, with both temporary system options off afterward.
+- [ ] Complete keyboard/VoiceOver control activation, menu navigation, and spoken error/status checks on the release build.
 - [x] Remove the permanent permission timer in favor of event-driven checks.
 - [x] Measure and record a five-minute pre-operation idle CPU/memory/wakeup baseline (0.1.3 build 5).
 - [x] Record a five-minute permission-enabled post-request sample (build 7); final settings-window visibility was not independently verified.
 - [x] Record a five-minute build 9 sample with Settings confirmed closed after a maintainer restart; this is a fresh-process idle observation.
 - [x] Record one five-minute build 11 idle sample after a confirmed ring in the same running app process, with Settings confirmed closed.
-- [ ] Compare fresh-launch and post-request idle on the same build to investigate the observed CPU/wakeup difference; the short process sample found no active loop.
+- [x] Compare fresh-launch and post-request idle on the same build and process. Build 12 recorded 0.0007% / 0.0008% CPU and steady footprint ranges before / after one menu request. The earlier higher idle CPU was not reproduced; Settings/diagnostic use and repeated operations remain separate checks in [Performance](PERFORMANCE.md).
 - [ ] Measure Find My costs, immediate post-request recovery, and resource use after repeated requests.
 - [x] Add About and local help/privacy.
 - [ ] Settle app identity and add opt-in Open at login after signed installation is ready.

@@ -4,6 +4,26 @@ PhonePing does no scheduled device scanning or permission polling. Permission is
 
 These are source-level properties, not a battery-life claim. Find My has its own process and resource use.
 
+## Controlled build 12 comparison, October 13, 2026
+
+Preview 0.1.3 build 12, arm64, macOS 27.0.1. The maintainer quit and reopened PhonePing, confirmed Settings was closed, and left the menu bar app idle. Find My was absent before the measurement. No real PhonePing UI, permission query, discovery, or sound request was performed by the assistant during sampling. The process remained the same throughout. A separate fictional Settings preview was inspected and closed during the interval; its resource use is not included in these counters.
+
+After the baseline, the maintainer selected Play Sound once from the menu with another app foreground, then confirmed audible ringing and that Find My stayed behind. The maintainer was asked to allow cleanup and leave PhonePing untouched after replying. Find My was absent at the start and end of the post-request sample. PhonePing's process ID matched the baseline before and after sampling; the measurement also detected no process replacement within either interval. No app rebuild, additional request, diagnostic, or UI inspection occurred during the second interval.
+
+| Metric | Fresh launch, five minutes | After one menu request, five minutes |
+| --- | --- | --- |
+| Duration / samples | 300.005 seconds / 21 | 300.001 seconds / 21 |
+| Process CPU time | 0.002070 seconds | 0.002409 seconds |
+| Average CPU, one core | 0.0007% | 0.0008% |
+| Physical footprint, min–max | 12.95–12.97 MiB | 18.86–18.94 MiB |
+| Resident memory, min–max | 74.52–74.53 MiB | 86.80–86.84 MiB |
+| Package-idle wakeups | 0 | 0 |
+| Interrupt wakeups | 3 | 3 |
+
+Idle CPU stayed low after this request. Physical footprint was about 6 MiB above the fresh baseline, with a narrow 0.08 MiB range during the post-request sample. A retained increase after one operation does not establish a leak; repeated-operation measurements are still needed. The earlier approximately 0.6% idle CPU was not reproduced in this menu-only run. Its cause remains unresolved, including whether opening Settings or diagnostics changes subsequent idle behavior.
+
+The CPU conversion was checked again during this pass against a controlled workload's process clock: 0.200014 seconds from converted counters versus 0.200000 seconds from the clock. The readings cover PhonePing only. The intervals do not capture the request itself, its immediate recovery, Find My's active cost, repeated-use behavior, or battery life. The post-request sample began after the maintainer's reply, so it is a settled-idle observation, not a latency measurement.
+
 ## Reproduce an idle measurement
 
 Build the release configuration locally, open PhonePing, close its windows, and let launch activity settle. Get PhonePing's PID from Activity Monitor, then run this developer-only script with Python 3:
@@ -18,7 +38,7 @@ Record app/OS versions, architecture, permission state, window state, and recent
 
 ## Further measurements before public release
 
-1. Repeat the settled post-request measurement after relevant changes; one permission-enabled build 11 sample with Settings confirmed closed is recorded below.
+1. Repeat the settled post-request measurement after relevant changes. The build 12 comparison above covers one menu request; separately compare Settings/diagnostic use and repeated operations before attributing the earlier higher idle CPU.
 2. Measure Refresh and one audible sound request, including Find My's CPU and memory separately.
 3. Repeat several manual operations and verify memory settles rather than continuously growing.
 4. Use Instruments on macOS to investigate any sustained CPU or repeated wakeups; do not add a keep-awake assertion to improve latency.
